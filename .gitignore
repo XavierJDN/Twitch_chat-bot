@@ -134,4 +134,4 @@ dmypy.json
 .vs/**
 
 # Personal settings
-.data/settings.json
+data/settings.json
