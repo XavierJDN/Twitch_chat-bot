@@ -132,3 +132,6 @@ dmypy.json
 
 # Visual Studio cache
 .vs/**
+
+# Personal settings
+    .data/settings.json
