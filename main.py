@@ -14,11 +14,12 @@ from dataclasses import dataclass
 
 from script.chat_bot.chatbot import *
 from script.twitch_bot.twitch_bot import *
-from script.bot.my_bot import MyBot
+from set_up import SetUpBot
 
 
 def main():
-	pass
-
+	# set up the bot
+	bot = SetUpBot()
+	
 if __name__ == "__main__":
 	main()
