@@ -12,6 +12,7 @@ from dataclasses import dataclass
 
 from script.message.message import *
 from script.chat_bot.chatbot import Chatbot
+from script.private_message.private_message import PrivateMessage
 
 
 class TwitchBot(Chatbot):
@@ -92,7 +93,7 @@ class TwitchBot(Chatbot):
 					if msg.command == "PING":
 						self.send("PONG", msg.params)
 					elif msg.command == "PRIVMSG":
-						privmsg = Privmsg.from_irc_msg(msg)
+						privmsg = PrivateMessage.from_irc_msg(msg)
 						if privmsg.channel == self.channel:
 							self.dispatch_command(privmsg)
 			except ConnectionError as e:
@@ -129,7 +130,7 @@ class TwitchBot(Chatbot):
 
 	def send_privmsg(self, msg):
 		sent_msg, num_sent_bytes = super().send_privmsg(msg)
-		text_length = len(Privmsg.from_str(sent_msg).text)
+		text_length = len(PrivateMessage.from_str(sent_msg).text)
 		if text_length > TwitchBot.twitch_text_len_max:
 			self.logger.warning(f"Message length {text_length} > {TwitchBot.twitch_text_len_max}")
 		return sent_msg, num_sent_bytes

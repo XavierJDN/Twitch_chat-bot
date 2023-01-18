@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 import script.message.message as Message
 
 @dataclass
@@ -20,7 +21,7 @@ class PrivateMessage:
 
 	@classmethod
 	def from_str(cls, msg_str):
-		return cls.from_irc_msg(Message.from_str(msg_str))
+		return cls.from_irc_msg(Message.Message.from_str(msg_str))
 
 	@classmethod
 	def from_irc_msg(cls, irc_msg):

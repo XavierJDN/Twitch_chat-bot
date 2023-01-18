@@ -9,7 +9,8 @@ import os
 import time
 from dataclasses import dataclass
 
-import script.message.message as message
+from script.client.client import Client
+import script.private_message.private_message as private_message
 
 
 class Chatbot:
@@ -33,12 +34,12 @@ class Chatbot:
 		:ivar params: The text following the command.
 		"""
 
-		privmsg: message.Privmsg
+		privmsg: private_message.PrivateMessage
 		name: str
 		params: str
 
 	def __init__(self, command_char, global_prefix=None):
-		self.__irc_client = message.Client()
+		self.__irc_client = Client()
 		self.global_prefix = global_prefix
 		self.command_char = command_char
 		self.__command_methods = {}
@@ -98,7 +99,7 @@ class Chatbot:
 	def register_command(self, command_name, callback):
 		self.command_methods[command_name] = callback
 
-	def dispatch_command(self, msg: message.Privmsg):
+	def dispatch_command(self, msg: private_message.PrivateMessage):
 		parts = msg.text.split(None, 1)
 		command_str = parts[0].lower()
 		if self.is_known_command(command_str):

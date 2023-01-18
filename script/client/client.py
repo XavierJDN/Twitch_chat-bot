@@ -1,7 +1,7 @@
 import socket
 import ssl
 from dataclasses import dataclass
-
+from script.message.message import Message
 class Client:
 	def __init__(self, channel_char="#"):
 		self.ssl_context = ssl.create_default_context()
