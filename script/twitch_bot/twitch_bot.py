@@ -47,6 +47,7 @@ class TwitchBot(Chatbot):
 	twitch_chat_port = 6697
 	twitch_text_len_max = 500
 	help_command_names = ("commands", "help")
+	_banned_words = []
 
 	def __init__(self, logs_folder, log_to_console=True, pokemon_exception_handling=False):
 		super().__init__(command_char="!")
@@ -54,6 +55,7 @@ class TwitchBot(Chatbot):
 		self.log_to_console = log_to_console
 		self.pokemon_exception_handling=pokemon_exception_handling
 		self._setup_commands()
+		self._set_banned_words()
 
 	def connect_and_join(self, password, nickname, channel):
 		self.nickname = nickname
@@ -96,6 +98,7 @@ class TwitchBot(Chatbot):
 						self.send("PONG", msg.params)
 					elif msg.command == "PRIVMSG":
 						privmsg = PrivateMessage.from_irc_msg(msg)
+						self._ban_user(privmsg)
 						if privmsg.channel == self.channel:
 							self.dispatch_command(privmsg)
 			except ConnectionError as e:
@@ -132,7 +135,11 @@ class TwitchBot(Chatbot):
 
 	def send_privmsg(self, msg):
 		sent_msg, num_sent_bytes = super().send_privmsg(msg)
-		text_length = len(PrivateMessage.from_str(sent_msg).text)
+		try:
+			text_length = len(PrivateMessage.from_str(sent_msg).text)
+		except Exception as e:
+			self.logger.warning(f"Error parsing sent message: {str(e)}")
+			return '', 0
 		if text_length > TwitchBot.twitch_text_len_max:
 			self.logger.warning(f"Message length {text_length} > {TwitchBot.twitch_text_len_max}")
 		return sent_msg, num_sent_bytes
