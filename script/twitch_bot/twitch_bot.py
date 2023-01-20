@@ -182,6 +182,11 @@ class TwitchBot(Chatbot):
 			unban = Thread(target=self._unban_user, args=(msg.username,10,))
 			unban.start()
 
+	def _unban_user(self, username:str, duration=300):
+		time.sleep(duration)
+		self.logger.info(f"{username} is unbanned")
+		self.send("MODE", f"{self.channel} -b {username}")
+
 	def _set_banned_words(self):
 		with open("./data/settings.json", "r") as settings:
 			self._banned_words = json.loads(settings.read())["ban_words"]
