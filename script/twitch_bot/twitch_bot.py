@@ -3,8 +3,10 @@ Chatbot for Twitch
 """
 
 
+import json
 import os
 import logging
+from threading import Thread
 import time
 import functools
 import inspect
@@ -171,3 +173,11 @@ class TwitchBot(Chatbot):
 		help_fn.__doc__ = "Shows the usage for a command."
 		for name in TwitchBot.help_command_names:
 			self.register_command(name, help_fn)
+
+	def _ban_user(self, msg: PrivateMessage):
+		if any([word for word in msg.text.lower().split(' ') if word in self._banned_words]):
+			durations = 300
+			self.send("MODE", f"{self.channel} +b {msg.username}")
+			self.logger.info(f"Banned {msg.username} for {durations} seconds with the message '{msg.text}'")
+			unban = Thread(target=self._unban_user, args=(msg.username,10,))
+			unban.start()
