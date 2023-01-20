@@ -18,6 +18,7 @@ class PrivateMessage:
 	prefix: str = None
 	channel: str = None
 	text: str = None
+	username: str = None
 
 	@classmethod
 	def from_str(cls, msg_str):
@@ -30,4 +31,5 @@ class PrivateMessage:
 		privmsg.prefix = irc_msg.prefix
 		privmsg.channel = channel_str[1:]
 		privmsg.text = text_str[1:] if text_str[0] == ":" else text_str
+		privmsg.username = irc_msg.prefix.split(":")[0].split("!")[0]
 		return privmsg
